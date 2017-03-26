@@ -2,15 +2,21 @@
 # openvpn access server
 #
 
-FROM fedora:23
+FROM debian:jessie
 
 # the openvpn access server version to be installed
-ENV openvpnas_version 2.1.4
+ARG openvpnas_version=2.1.4
 
-# install the openvpn access server package and
-# install additional tools (net-tools is necessary to run the system)
-RUN dnf install -y http://swupdate.openvpn.org/as/openvpn-as-${openvpnas_version}-Fedora23.x86_64.rpm && \
-    dnf install -y net-tools
+# install dependencies
+RUN apt-get update \
+  && apt-get install -y iptables libnfnetlink0 libxtables10 net-tools curl \
+  && rm -rf /var/lib/apt/lists/*
+
+# download and install openvpn as
+RUN curl -Lo /tmp/openvpnas.dpkg http://swupdate.openvpn.org/as/openvpn-as-${openvpnas_version}-Debian8.amd_64.deb \
+  && dpkg -i /tmp/openvpnas.dpkg \
+  && rm -f /tmp/openvpnas.dpkg
+
 # Expose the necessary ports
 EXPOSE 443
 EXPOSE 943
