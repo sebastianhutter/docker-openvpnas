@@ -5,7 +5,7 @@
 FROM debian:jessie
 
 # the openvpn access server version to be installed
-ARG openvpnas_version=2.1.4
+ARG openvpnas_version=2.1.9
 
 # install dependencies
 RUN apt-get update \
